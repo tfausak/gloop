@@ -1,0 +1,19 @@
+category: Game Engine
+description: Gloop provides SDL2 game loops
+extra-source-files:
+- CHANGELOG.markdown
+- README.markdown
+ghc-options: -Wall
+github: tfausak/gloop
+library:
+  dependencies:
+  - base
+  - sdl2
+  - text
+  source-dirs: library
+license: MIT
+license-file: LICENSE.markdown
+name: gloop
+maintainer: Taylor Fausak
+synopsis: SDL2 game loops.
+version: 0.0.1

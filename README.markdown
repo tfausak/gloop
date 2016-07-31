@@ -2,7 +2,7 @@
 
 Gloop provides SDL2 game loops.
 
-Gloop is a thin wrapped around [the sdl2 package][]. It provides a single
+Gloop is a thin wrapper around [the sdl2 package][]. It provides a single
 function called `play` that handles a game loop with a fixed update time step
 and variable rendering as described by Robert Nystrom's [Game Programming
 Patterns][]. Its interface is modeled after [the gloss package][].

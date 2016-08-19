@@ -68,20 +68,35 @@ play title windowConfig duration world render handle step = do
     loop window duration state render handle step
 
 
+-- | The game state, which tracks the current time, lag, and world.
 data State world = State
     { stateWorld :: world
+    -- ^ The world.
     , stateTick :: Word.Word32
+    -- ^ The current time in milliseconds.
     , stateLag :: Word.Word32
+    -- ^ The current lag, which is the time in milliseconds since the last
+    -- simulation step.
     }
 
 
+-- | The main game loop. Handles polling for events, applying those events to
+-- the world, running the simulation, and rendering the world.
 loop
     :: SDL.Window
+    -- ^ The window to render the world into.
     -> Word.Word32
+    -- ^ The duration in milliseconds of each step of the world.
     -> State world
+    -- ^ The current state of the world.
     -> (SDL.Window -> Double -> world -> IO ())
+    -- ^ A function for rendering the world. The second argument is a smear
+    -- value in the interval [0, 1).
     -> (SDL.Event -> world -> Maybe world)
+    -- ^ A function for handling input events. Return 'Nothing' to stop the
+    -- game loop.
     -> (world -> world)
+    -- ^ A function that steps the world a single iteration.
     -> IO ()
 loop window duration state render handle step = do
     let eldnah world event = handle event world
@@ -104,12 +119,20 @@ loop window duration state render handle step = do
             loop window duration newState render handle step
 
 
+-- | Steps the world a single iteration if enough time has passed. Otherwise
+-- returns the same world.
 simulate
     :: Word.Word32
+    -- ^ The duration in milliseconds of each step of the world.
     -> (world -> world)
+    -- ^ A function that steps the world a single iteration.
     -> world
+    -- ^ The current state of the world.
     -> Word.Word32
+    -- ^ The current lag, which is the time in milliseconds since the last
+    -- simulation step.
     -> (world, Word.Word32)
+    -- ^ The new world and the new lag.
 simulate duration step world lag = do
     let newWorld = step world
     let newLag = lag - duration

@@ -59,7 +59,8 @@ play
 play title windowConfig duration world render handle step = do
     SDL.initializeAll
 
-    window <- SDL.createWindow (StringConv.toS title) windowConfig
+    let textTitle = StringConv.toS title
+    window <- SDL.createWindow textTitle windowConfig
 
     now <- SDL.ticks
     let state = State world now 0
@@ -83,8 +84,10 @@ loop
     -> (world -> world)
     -> IO ()
 loop window duration state render handle step = do
+    let eldnah world event = handle event world
+    let initialWorld = stateWorld state
     events <- SDL.pollEvents
-    let maybeWorld = Monad.foldM (flip handle) (stateWorld state) events
+    let maybeWorld = Monad.foldM eldnah initialWorld events
     case maybeWorld of
         Nothing -> pure ()
         Just world -> do
@@ -107,10 +110,9 @@ simulate
     -> world
     -> Word.Word32
     -> (world, Word.Word32)
-simulate duration step world lag =
-    if lag < duration
-    then (world, lag)
-    else do
-        let newWorld = step world
-        let newLag = lag - duration
-        simulate duration step newWorld newLag
+simulate duration step world lag = do
+    let newWorld = step world
+    let newLag = lag - duration
+    case compare lag duration of
+        LT -> (world, lag)
+        _ -> simulate duration step newWorld newLag

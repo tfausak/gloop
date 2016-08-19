@@ -28,7 +28,7 @@ import qualified SDL
 -- >     -- initial world
 -- >     World { step = 0 }
 -- >     -- renders the world
--- >     (\ _window _extrapolation _world -> do
+-- >     (\ _window _smear _world -> do
 -- >         pure ())
 -- >     -- handles events
 -- >     (\ event world -> case Gloop.eventPayload event of
@@ -48,8 +48,8 @@ play
     -> world
     -- ^ The initial world to start with.
     -> (SDL.Window -> Double -> world -> IO ())
-    -- ^ A function for rendering the world. The second argument is an
-    -- extrapolation value in the interval [0, 1).
+    -- ^ A function for rendering the world. The second argument is a smear
+    -- value in the interval [0, 1).
     -> (SDL.Event -> world -> Maybe world)
     -- ^ A function for handling input events. Return 'Nothing' to stop the
     -- game loop.

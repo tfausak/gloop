@@ -23,7 +23,7 @@ main = Gloop.play
     -- initial world
     World { step = 0 }
     -- renders the world
-    (\ _window _extrapolation _world -> do
+    (\ _window _smear _world -> do
         pure ())
     -- handles events
     (\ event world -> case Gloop.eventPayload event of

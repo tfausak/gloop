@@ -11,6 +11,8 @@ library:
   - sdl2
   - string-conv
   - text
+  other-modules:
+  - Gloop.Internal
   source-dirs: library
 license: MIT
 license-file: LICENSE.markdown

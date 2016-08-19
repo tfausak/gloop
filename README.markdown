@@ -9,7 +9,6 @@ Patterns][]. Its interface is modeled after [the gloss package][].
 
 ``` haskell
 import qualified Gloop
-import qualified SDL
 
 data World = World { step :: Int }
 
@@ -18,9 +17,9 @@ main = Gloop.play
     -- title
     "Example"
     -- window config
-    SDL.defaultWindow { SDL.windowResizable = True }
+    Gloop.defaultWindow { Gloop.windowResizable = True }
     -- renderer config
-    SDL.defaultRenderer { SDL.rendererType = SDL.AcceleratedVSyncRenderer }
+    Gloop.defaultRenderer { Gloop.rendererType = Gloop.AcceleratedVSyncRenderer }
     -- step duration (ms)
     100
     -- initial world
@@ -29,8 +28,8 @@ main = Gloop.play
     (\ _renderer _extrapolation _world -> do
         pure ())
     -- handles events
-    (\ event world -> case SDL.eventPayload event of
-        SDL.WindowClosedEvent _ -> Nothing
+    (\ event world -> case Gloop.eventPayload event of
+        Gloop.WindowClosedEvent _ -> Nothing
         _ -> Just world)
     -- steps the world
     (\ world -> world { step = step world + 1 })

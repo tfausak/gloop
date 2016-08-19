@@ -1,8 +1,11 @@
+{-# LANGUAGE FlexibleContexts #-}
+
 module Gloop
     ( play
     ) where
 
 import qualified Control.Monad as Monad
+import qualified Data.String.Conv as StringConv
 import qualified Data.Text as Text
 import qualified Data.Word as Word
 import qualified SDL
@@ -12,7 +15,6 @@ import qualified SDL
 -- and variable rendering described by Robert Nystrom's
 -- <http://gameprogrammingpatterns.com Game Programming Patterns>.
 --
--- > import qualified Data.Text as Text
 -- > import qualified Gloop
 -- > import qualified SDL
 -- >
@@ -21,7 +23,7 @@ import qualified SDL
 -- > main :: IO ()
 -- > main = Gloop.play
 -- >     -- title
--- >     (Text.pack "Example")
+-- >     "Example"
 -- >     -- window config
 -- >     SDL.defaultWindow { SDL.windowResizable = True }
 -- >     -- renderer config
@@ -40,7 +42,8 @@ import qualified SDL
 -- >     -- steps the world
 -- >     (\ world -> world { step = step world + 1 })
 play
-    :: Text.Text
+    :: (StringConv.StringConv title Text.Text)
+    => title
     -- ^ The title to use for the game's window.
     -> SDL.WindowConfig
     -- ^ The configuration options for the game's window. Usually
@@ -64,7 +67,7 @@ play
 play title windowConfig rendererConfig duration world render handle step = do
     SDL.initializeAll
 
-    window <- SDL.createWindow title windowConfig
+    window <- SDL.createWindow (StringConv.toS title) windowConfig
 
     let driver = -1 -- First available rendering driver that supports config.
     renderer <- SDL.createRenderer window driver rendererConfig

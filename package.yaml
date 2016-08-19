@@ -9,6 +9,7 @@ library:
   dependencies:
   - base
   - sdl2
+  - string-conv
   - text
   source-dirs: library
 license: MIT

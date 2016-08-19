@@ -8,7 +8,6 @@ and variable rendering as described by Robert Nystrom's [Game Programming
 Patterns][]. Its interface is modeled after [the gloss package][].
 
 ``` haskell
-import qualified Data.Text as Text
 import qualified Gloop
 import qualified SDL
 
@@ -17,7 +16,7 @@ data World = World { step :: Int }
 main :: IO ()
 main = Gloop.play
     -- title
-    (Text.pack "Example")
+    "Example"
     -- window config
     SDL.defaultWindow { SDL.windowResizable = True }
     -- renderer config

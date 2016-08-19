@@ -23,14 +23,12 @@ import qualified SDL
 -- >     "Example"
 -- >     -- window config
 -- >     Gloop.defaultWindow { Gloop.windowResizable = True }
--- >     -- renderer config
--- >     Gloop.defaultRenderer { Gloop.rendererType = Gloop.AcceleratedVSyncRenderer }
 -- >     -- step duration (ms)
 -- >     100
 -- >     -- initial world
 -- >     World { step = 0 }
 -- >     -- renders the world
--- >     (\ _renderer _extrapolation _world -> do
+-- >     (\ _window _extrapolation _world -> do
 -- >         pure ())
 -- >     -- handles events
 -- >     (\ event world -> case Gloop.eventPayload event of
@@ -45,14 +43,11 @@ play
     -> SDL.WindowConfig
     -- ^ The configuration options for the game's window. Usually
     -- 'SDL.defaultWindow'.
-    -> SDL.RendererConfig
-    -- ^ The configuration options for the game's renderer. Usually
-    -- 'SDL.defaultRenderer'.
     -> Word.Word32
     -- ^ The duration in milliseconds of each step of the world.
     -> world
     -- ^ The initial world to start with.
-    -> (SDL.Renderer -> Double -> world -> IO ())
+    -> (SDL.Window -> Double -> world -> IO ())
     -- ^ A function for rendering the world. The second argument is an
     -- extrapolation value in the interval [0, 1).
     -> (SDL.Event -> world -> Maybe world)
@@ -61,18 +56,15 @@ play
     -> (world -> world)
     -- ^ A function that steps the world a single iteration.
     -> IO ()
-play title windowConfig rendererConfig duration world render handle step = do
+play title windowConfig duration world render handle step = do
     SDL.initializeAll
 
     window <- SDL.createWindow (StringConv.toS title) windowConfig
 
-    let driver = -1 -- First available rendering driver that supports config.
-    renderer <- SDL.createRenderer window driver rendererConfig
-
     now <- SDL.ticks
     let state = State world now 0
 
-    loop renderer duration state render handle step
+    loop window duration state render handle step
 
 
 data State world = State
@@ -83,14 +75,14 @@ data State world = State
 
 
 loop
-    :: SDL.Renderer
+    :: SDL.Window
     -> Word.Word32
     -> State world
-    -> (SDL.Renderer -> Double -> world -> IO ())
+    -> (SDL.Window -> Double -> world -> IO ())
     -> (SDL.Event -> world -> Maybe world)
     -> (world -> world)
     -> IO ()
-loop renderer duration state render handle step = do
+loop window duration state render handle step = do
     events <- SDL.pollEvents
     let maybeWorld = Monad.foldM (flip handle) (stateWorld state) events
     case maybeWorld of
@@ -102,13 +94,11 @@ loop renderer duration state render handle step = do
             let (newWorld, newLag) = simulate duration step world lag
 
             let smear = fromIntegral lag / fromIntegral duration
-            SDL.clear renderer
-            render renderer smear newWorld
-            SDL.present renderer
+            render window smear newWorld
 
             let newState = State newWorld now newLag
 
-            loop renderer duration newState render handle step
+            loop window duration newState render handle step
 
 
 simulate

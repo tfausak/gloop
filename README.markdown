@@ -18,14 +18,12 @@ main = Gloop.play
     "Example"
     -- window config
     Gloop.defaultWindow { Gloop.windowResizable = True }
-    -- renderer config
-    Gloop.defaultRenderer { Gloop.rendererType = Gloop.AcceleratedVSyncRenderer }
     -- step duration (ms)
     100
     -- initial world
     World { step = 0 }
     -- renders the world
-    (\ _renderer _extrapolation _world -> do
+    (\ _window _extrapolation _world -> do
         pure ())
     -- handles events
     (\ event world -> case Gloop.eventPayload event of

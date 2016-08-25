@@ -1,5 +1,15 @@
 category: Game Engine
 description: Gloop provides SDL2 game loops
+executables:
+  gloop-example:
+    dependencies:
+    - base
+    - gloop
+    - linear
+    - sdl2
+    - text
+    main: Example.hs
+    source-dirs: executables
 extra-source-files:
 - CHANGELOG.markdown
 - README.markdown
@@ -9,10 +19,7 @@ library:
   dependencies:
   - base
   - sdl2
-  - string-conv
   - text
-  other-modules:
-  - Gloop.Internal
   source-dirs: library
 license: MIT
 license-file: LICENSE.markdown
